@@ -63,8 +63,6 @@ const r1 = [r[0] - q[0], r[1] - q[1]];
 
 const len = Math.abs((p1[0] * r1[1] - p1[1] * r1[0]) / Math.hypot(...r1));
 
-console.log(len);
-
 function getShapes(shape, x, y, length) {
     const result = [];
     let v = new Vector2D(x, y);
@@ -84,8 +82,6 @@ function getShapes(shape, x, y, length) {
 function drawPoints(points) {
     const ctx = get2DContext('.canvas-2');
 
-    console.log(points);
-
     // @ts-ignore
     ctx.moveTo(...points[0]);
 
@@ -100,4 +96,29 @@ function drawPoints(points) {
 }
 
 drawPoints(getShapes(4, 40, 40, 20));
-drawPoints(getShapes(60, 110, 50, 10));
+// drawPoints(getShapes(60, 110, 50, 10));
+
+// 向量画圆
+// 生成一系列圆的顶点
+const TAU_SEGMENTS = 120;
+const TAU = Math.PI * 2;
+
+function arc(x, y, radius, startAng = 0, endAng = Math.PI * 2) {
+    const ang = Math.min(TAU, endAng - startAng);
+    const ret = ang === TAU ? [] : [[x, y]];
+    const segments = Math.round(TAU_SEGMENTS * ang / TAU);
+    for(let i = 0; i <= segments; i++) {
+        const x0 = x + radius * Math.cos(startAng + ang * i / segments);
+        const y0 = y + radius * Math.sin(startAng + ang * i / segments);
+
+        ret.push([x0, y0]);
+    }
+
+    return ret;
+}
+
+drawPoints(arc(100, 100, 50));
+
+console.log(arc(150, 150, 50, 0, Math.PI / 2));
+
+drawPoints(arc(150, 150, 50, 0, Math.PI / 2));
