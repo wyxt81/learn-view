@@ -1,30 +1,31 @@
 const htmlWepackPlugin = require('html-webpack-plugin');
 const path = require('path');
+const fs = require('fs');
 const { HotModuleReplacementPlugin } = require('webpack');
+
+const result = fs.readdirSync(path.resolve(__dirname, 'src')).filter(item => item !== '.DS_Store');
+
+const entry = {};
+
+result.forEach(item => {
+    entry[item] = `./src/${item}/index.ts`;
+});
 
 module.exports = {
     mode: 'development',
     devtool: 'inline-source-map',
-    entry: {
-        vec: './src/vec/index.ts',
-        tree: './src/tree/index.ts'
-    },
+    entry: entry,
     output: {
         filename: '[name].bundle.js',
         path: path.resolve(__dirname, 'dist'),
         clean: true,
     },
     plugins: [
-        new htmlWepackPlugin({
-            filename: './vec.html',
-            template: './src/vec/index.html',
-            chunks: ['vec']
-        }),
-        new htmlWepackPlugin({
-            filename: './tree.html',
-            template: './src/tree/index.html',
-            chunks: ['tree']
-        }),
+        ...result.map(item => new htmlWepackPlugin({
+            filename: `./${item}.html`,
+            template: `./src/${item}/index.html`,
+            chunks: [item]
+        })),
         new HotModuleReplacementPlugin({
             // Options...
         })
@@ -49,7 +50,7 @@ module.exports = {
     resolve: {
         extensions: ['.ts', '.js'],
         alias: {
-            'utils': path.resolve(__dirname, "src/utils"),
+            'utils': path.resolve(__dirname, "utils"),
         }
     },
     devServer: {
