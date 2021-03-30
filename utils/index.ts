@@ -77,3 +77,19 @@ export class Vector2D extends Array {
 export function get2DContext(selector: string) {
     return (document.querySelector(selector) as HTMLCanvasElement).getContext('2d');
 }
+
+export function drawPoints(points, selector) {
+  const ctx = get2DContext(selector);
+
+  // @ts-ignore
+  ctx.moveTo(...points[0]);
+
+  points.slice(1).forEach(point => {
+      // @ts-ignore
+      ctx.lineTo(...point);
+  });
+
+  ctx.strokeStyle = '#f40';
+  ctx.closePath();
+  ctx.stroke();
+}

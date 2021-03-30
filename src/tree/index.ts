@@ -1,4 +1,4 @@
-import { Vector2D, get2DContext } from 'utils/index';
+import { Vector2D, get2DContext, drawPoints } from 'utils/index';
 
 const ctx = get2DContext('.canvas-1');
 
@@ -79,23 +79,7 @@ function getShapes(shape, x, y, length) {
     return result;
 }
 
-function drawPoints(points) {
-    const ctx = get2DContext('.canvas-2');
-
-    // @ts-ignore
-    ctx.moveTo(...points[0]);
-
-    points.slice(1).forEach(point => {
-        // @ts-ignore
-        ctx.lineTo(...point);
-    });
-
-    ctx.strokeStyle = '#f40';
-    ctx.closePath();
-    ctx.stroke();
-}
-
-drawPoints(getShapes(4, 40, 40, 20));
+drawPoints(getShapes(4, 40, 40, 20), '.canvas-1');
 // drawPoints(getShapes(60, 110, 50, 10));
 
 // 向量画圆
@@ -117,8 +101,8 @@ function arc(x, y, radius, startAng = 0, endAng = Math.PI * 2) {
     return ret;
 }
 
-drawPoints(arc(100, 100, 50));
+drawPoints(arc(100, 100, 50), '.canvas-2');
 
 console.log(arc(150, 150, 50, 0, Math.PI / 2));
 
-drawPoints(arc(150, 150, 50, 0, Math.PI / 2));
+drawPoints(arc(150, 150, 50, 0, Math.PI / 2), '.canvas-2');
