@@ -78,8 +78,11 @@ export function get2DContext(selector: string) {
     return (document.querySelector(selector) as HTMLCanvasElement).getContext('2d');
 }
 
-export function drawPoints(points, selector) {
-  const ctx = get2DContext(selector);
+export function drawPoints(points, selector, config?) {
+
+  const ctx = typeof selector === 'string' ? get2DContext(selector) : selector;
+
+  ctx.beginPath();
 
   // @ts-ignore
   ctx.moveTo(...points[0]);
@@ -89,7 +92,33 @@ export function drawPoints(points, selector) {
       ctx.lineTo(...point);
   });
 
-  ctx.strokeStyle = '#f40';
+  ctx.strokeStyle = config?.strokeStyle || '#f40';
+
   ctx.closePath();
-  ctx.stroke();
+  ctx.fillStyle = config?.fillStyle || '#f40';
+  ctx.fill('evenodd');
+}
+
+export function parametric(xFunc, yFunc) {
+  return function (start, end, seg = 100, ...arg) {
+      const points = [];
+
+      for (let i = 0; i <= seg; i++) {
+          const p = i / seg;
+          const t = start * (1 - p) + end * p;
+          const x = xFunc(t, ...arg);
+          const y = yFunc(t, ...arg);
+
+          points.push([x, y]);
+      }
+
+      return {
+          points,
+          draw: drawPoints.bind(null, points)
+      }
+  }
+}
+
+function isPointInPath(ctx, x, y) {
+  
 }
